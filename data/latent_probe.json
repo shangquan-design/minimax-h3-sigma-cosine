@@ -2,540 +2,540 @@
   "0": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001208782196045,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999991655349731,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "1": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001256465911865,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999994039535522,
+      "cosine": 0.9999999999999999,
       "relative_l2": 0.0
     }
   },
   "2": {
     "comparison": "full",
     "video": {
-      "cosine": 1.000131368637085,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999988079071045,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "3": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001310110092163,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999990463256836,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "4": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001347064971924,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999992251396179,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "5": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001287460327148,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.999998927116394,
+      "cosine": 0.9999999999999999,
       "relative_l2": 0.0
     }
   },
   "6": {
     "comparison": "full",
     "video": {
-      "cosine": 1.000123381614685,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999990463256836,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "7": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001291036605835,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999986886978149,
+      "cosine": 0.9999999999999999,
       "relative_l2": 0.0
     }
   },
   "8": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001333951950073,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999991655349731,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "9": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001293420791626,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999985694885254,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "10": {
     "comparison": "full",
     "video": {
-      "cosine": 1.000138282775879,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999991655349731,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "11": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001320838928223,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999980926513672,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "12": {
     "comparison": "full",
     "video": {
-      "cosine": 1.000136375427246,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999993443489075,
+      "cosine": 0.9999999999999998,
       "relative_l2": 0.0
     }
   },
   "13": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001356601715088,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999989867210388,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "14": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001304149627686,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999990463256836,
+      "cosine": 0.9999999999999997,
       "relative_l2": 0.0
     }
   },
   "15": {
     "comparison": "full",
     "video": {
-      "cosine": 1.000134825706482,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.999998927116394,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "16": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001354217529297,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999989867210388,
+      "cosine": 0.9999999999999998,
       "relative_l2": 0.0
     }
   },
   "17": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001345872879028,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999990463256836,
+      "cosine": 0.9999999999999998,
       "relative_l2": 0.0
     }
   },
   "18": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001330375671387,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999989867210388,
+      "cosine": 0.9999999999999998,
       "relative_l2": 0.0
     }
   },
   "19": {
     "comparison": "full",
     "video": {
-      "cosine": 1.000138282775879,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999990463256836,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "20": {
     "comparison": "full",
     "video": {
-      "cosine": 1.000135064125061,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999988675117493,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "21": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001342296600342,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999986290931702,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "22": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001378059387207,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999988079071045,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "23": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001310110092163,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999991655349731,
+      "cosine": 0.9999999999999998,
       "relative_l2": 0.0
     }
   },
   "24": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001366138458252,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999988079071045,
+      "cosine": 0.9999999999999998,
       "relative_l2": 0.0
     }
   },
   "25": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001435279846191,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999987483024597,
+      "cosine": 0.9999999999999999,
       "relative_l2": 0.0
     }
   },
   "26": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001354217529297,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999992847442627,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "27": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001420974731445,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999986290931702,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "28": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001375675201416,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999987483024597,
+      "cosine": 1.0,
       "relative_l2": 0.0
     }
   },
   "29": {
     "comparison": "full",
     "video": {
-      "cosine": 1.0001401901245117,
+      "cosine": 1.0,
       "relative_l2": 0.0
     },
     "audio": {
-      "cosine": 0.9999991655349731,
+      "cosine": 0.9999999999999999,
       "relative_l2": 0.0
     }
   },
   "30": {
     "comparison": "dense_lowpass_vs_candidate_low",
     "video": {
-      "cosine": 0.9999468326568604,
-      "relative_l2": 0.011301560327410698
+      "cosine": 0.9999405237798645,
+      "relative_l2": 0.011302526018046734
     },
     "audio": {
-      "cosine": 0.9999979734420776,
-      "relative_l2": 0.0014166510663926601
+      "cosine": 0.9999990093261392,
+      "relative_l2": 0.0014166521665568538
     }
   },
   "31": {
     "comparison": "dense_lowpass_vs_candidate_low",
     "video": {
-      "cosine": 0.9997449517250061,
-      "relative_l2": 0.02366987243294716
+      "cosine": 0.9997406991741081,
+      "relative_l2": 0.023671093161133725
     },
     "audio": {
-      "cosine": 0.999995231628418,
-      "relative_l2": 0.0027114690747112036
+      "cosine": 0.9999963689500388,
+      "relative_l2": 0.0027114710349603866
     }
   },
   "32": {
     "comparison": "dense_lowpass_vs_candidate_low",
     "video": {
-      "cosine": 0.9993661642074585,
-      "relative_l2": 0.03727993369102478
+      "cosine": 0.9993611699586551,
+      "relative_l2": 0.037280884826002544
     },
     "audio": {
-      "cosine": 0.9999894499778748,
-      "relative_l2": 0.004304658155888319
+      "cosine": 0.999990830370584,
+      "relative_l2": 0.004304662175666215
     }
   },
   "33": {
     "comparison": "dense_lowpass_vs_candidate_low",
     "video": {
-      "cosine": 0.998756468296051,
-      "relative_l2": 0.05229882895946503
+      "cosine": 0.9987529765593842,
+      "relative_l2": 0.05229712225271281
     },
     "audio": {
-      "cosine": 0.9999801516532898,
-      "relative_l2": 0.006162657868117094
+      "cosine": 0.999981177807615,
+      "relative_l2": 0.006162662493695164
     }
   },
   "34": {
     "comparison": "dense_lowpass_vs_candidate_low",
     "video": {
-      "cosine": 0.9978584051132202,
-      "relative_l2": 0.06892924010753632
+      "cosine": 0.997854532498258,
+      "relative_l2": 0.06892735196235898
     },
     "audio": {
-      "cosine": 0.9999625086784363,
-      "relative_l2": 0.008599241264164448
+      "cosine": 0.9999632915588609,
+      "relative_l2": 0.008599247123801291
     }
   },
   "35": {
     "comparison": "full",
     "video": {
-      "cosine": 0.999334990978241,
-      "relative_l2": 0.040668051689863205
+      "cosine": 0.9992017725997158,
+      "relative_l2": 0.040661256764870674
     },
     "audio": {
-      "cosine": 0.9999440312385559,
-      "relative_l2": 0.010504310950636864
+      "cosine": 0.9999450880754899,
+      "relative_l2": 0.010504318680814338
     }
   },
   "36": {
     "comparison": "full",
     "video": {
-      "cosine": 0.9993086457252502,
-      "relative_l2": 0.04151971638202667
+      "cosine": 0.9991729989493519,
+      "relative_l2": 0.04151256609606377
     },
     "audio": {
-      "cosine": 0.9999104142189026,
-      "relative_l2": 0.013322851620614529
+      "cosine": 0.9999115234337584,
+      "relative_l2": 0.013322862921088285
     }
   },
   "37": {
     "comparison": "full",
     "video": {
-      "cosine": 0.9992653727531433,
-      "relative_l2": 0.042561136186122894
+      "cosine": 0.9991373347133335,
+      "relative_l2": 0.042553918072784726
     },
     "audio": {
-      "cosine": 0.9998495578765869,
-      "relative_l2": 0.017305947840213776
+      "cosine": 0.9998505987171142,
+      "relative_l2": 0.017305964156815658
     }
   },
   "38": {
     "comparison": "full",
     "video": {
-      "cosine": 0.9992179274559021,
-      "relative_l2": 0.043863870203495026
+      "cosine": 0.9990918953781767,
+      "relative_l2": 0.04385613970514527
     },
     "audio": {
-      "cosine": 0.9997482895851135,
-      "relative_l2": 0.022423183545470238
+      "cosine": 0.9997490250756955,
+      "relative_l2": 0.022423200269365767
     }
   },
   "39": {
     "comparison": "full",
     "video": {
-      "cosine": 0.9991470575332642,
-      "relative_l2": 0.04551788046956062
+      "cosine": 0.9990327390423553,
+      "relative_l2": 0.045509895683728666
     },
     "audio": {
-      "cosine": 0.9995887279510498,
-      "relative_l2": 0.028652694076299667
+      "cosine": 0.9995899483924254,
+      "relative_l2": 0.02865272991826167
     }
   },
   "40": {
     "comparison": "full",
     "video": {
-      "cosine": 0.9990593791007996,
-      "relative_l2": 0.04768694192171097
+      "cosine": 0.9989521690339626,
+      "relative_l2": 0.04767851346277722
     },
     "audio": {
-      "cosine": 0.9993535876274109,
-      "relative_l2": 0.03593183681368828
+      "cosine": 0.9993547427457072,
+      "relative_l2": 0.035931885443222025
     }
   },
   "41": {
     "comparison": "full",
     "video": {
-      "cosine": 0.9989500045776367,
-      "relative_l2": 0.050494614988565445
+      "cosine": 0.9988430338813605,
+      "relative_l2": 0.0504856691280601
     },
     "audio": {
-      "cosine": 0.9990089535713196,
-      "relative_l2": 0.044494327157735825
+      "cosine": 0.9990100392029135,
+      "relative_l2": 0.04449439524932006
     }
   },
   "42": {
     "comparison": "full",
     "video": {
-      "cosine": 0.9988031983375549,
-      "relative_l2": 0.05419779196381569
+      "cosine": 0.9986895239525097,
+      "relative_l2": 0.05418769388205665
     },
     "audio": {
-      "cosine": 0.9985272884368896,
-      "relative_l2": 0.054239269345998764
+      "cosine": 0.9985281405325959,
+      "relative_l2": 0.05423934702793577
     }
   },
   "43": {
     "comparison": "full",
     "video": {
-      "cosine": 0.998583972454071,
-      "relative_l2": 0.05908685922622681
+      "cosine": 0.9984683421544253,
+      "relative_l2": 0.0590756512749998
     },
     "audio": {
-      "cosine": 0.9978840351104736,
-      "relative_l2": 0.06499890983104706
+      "cosine": 0.9978853289390205,
+      "relative_l2": 0.06499902757473836
     }
   },
   "44": {
     "comparison": "full",
     "video": {
-      "cosine": 0.9982678890228271,
-      "relative_l2": 0.0654001533985138
+      "cosine": 0.9981486506263119,
+      "relative_l2": 0.06538863351827613
     },
     "audio": {
-      "cosine": 0.9970561265945435,
-      "relative_l2": 0.07666885852813721
+      "cosine": 0.9970569360386304,
+      "relative_l2": 0.07666899220927592
     }
   },
   "45": {
     "comparison": "full",
     "video": {
-      "cosine": 0.9977853894233704,
-      "relative_l2": 0.07335623353719711
+      "cosine": 0.9976783551516623,
+      "relative_l2": 0.07334672598492759
     },
     "audio": {
-      "cosine": 0.9960240721702576,
-      "relative_l2": 0.08909277617931366
+      "cosine": 0.9960248840913086,
+      "relative_l2": 0.08909291945000929
     }
   },
   "46": {
     "comparison": "full",
     "video": {
-      "cosine": 0.9971150755882263,
-      "relative_l2": 0.082804836332798
+      "cosine": 0.997002062750408,
+      "relative_l2": 0.08279500713631914
     },
     "audio": {
-      "cosine": 0.9947245717048645,
-      "relative_l2": 0.10261524468660355
+      "cosine": 0.9947254543047819,
+      "relative_l2": 0.10261542555078815
     }
   },
   "47": {
     "comparison": "full",
     "video": {
-      "cosine": 0.9962221384048462,
-      "relative_l2": 0.09310465306043625
+      "cosine": 0.9960899958977405,
+      "relative_l2": 0.09309440403077801
     },
     "audio": {
-      "cosine": 0.9930553436279297,
-      "relative_l2": 0.11772552132606506
+      "cosine": 0.9930562491555471,
+      "relative_l2": 0.1177257253231857
     }
   },
   "48": {
     "comparison": "full",
     "video": {
-      "cosine": 0.9949442148208618,
-      "relative_l2": 0.10476719588041306
+      "cosine": 0.9948330374833552,
+      "relative_l2": 0.10476078226209276
     },
     "audio": {
-      "cosine": 0.9911545515060425,
-      "relative_l2": 0.13285045325756073
+      "cosine": 0.9911557131104631,
+      "relative_l2": 0.13285071196102183
     }
   }
 }
