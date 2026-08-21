@@ -1,0 +1,126 @@
+{
+  "p1": {
+    "dense": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/e7181bb6-faf5-4288-9f2e-fbaf65254d70.mp4",
+      "e2e_s": 144.03038505600125,
+      "speedup": 1.0,
+      "audio": {
+        "lufs_i": -29.8,
+        "rms": 0.024655387458226964,
+        "sample_peak": 0.08245085179805756,
+        "true_peak_dbfs": -21.7,
+        "clipping_ratio": 0.0
+      }
+    },
+    "ours": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/2476288c-3af9-4984-8086-581a6bff0f23.mp4",
+      "e2e_s": 131.91062488600437,
+      "speedup": 1.0918785744550192,
+      "audio": {
+        "lufs_i": -29.8,
+        "rms": 0.024630354480606003,
+        "sample_peak": 0.08155161887407303,
+        "true_peak_dbfs": -21.8,
+        "clipping_ratio": 0.0
+      },
+      "metrics": {
+        "frames": 124,
+        "mae": 3.700017075384817,
+        "mse": 30.67471255025556,
+        "psnr": 33.26299859181102,
+        "ssim": 0.939846879654208,
+        "lpips": 0.05913005736205847,
+        "sharpness_ratio": 0.9798788601793365,
+        "temporal_delta_error": 2.8415732771400513,
+        "temporal_jitter_ratio": 1.0034534724525788,
+        "patch_boundary_ratio": 0.988532190400897
+      }
+    },
+    "official_hybrid": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/af022316-188f-444f-a3bb-fc05f9705dfe.mp4",
+      "e2e_s": 131.588763533975,
+      "speedup": 1.0945492699216217,
+      "audio": {
+        "lufs_i": -29.8,
+        "rms": 0.02462463807956054,
+        "sample_peak": 0.0847117081284523,
+        "true_peak_dbfs": -21.4,
+        "clipping_ratio": 0.0
+      },
+      "metrics": {
+        "frames": 124,
+        "mae": 3.9353083026024605,
+        "mse": 27.75481787035542,
+        "psnr": 33.69741979070654,
+        "ssim": 0.9525209772326512,
+        "lpips": 0.05193668874281068,
+        "sharpness_ratio": 0.968001404865608,
+        "temporal_delta_error": 2.5271581828109615,
+        "temporal_jitter_ratio": 0.9683991659804234,
+        "patch_boundary_ratio": 0.9882924013569924
+      }
+    }
+  },
+  "p2": {
+    "dense": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/a647845f-fb07-4010-aa51-6e028389f4bb.mp4",
+      "e2e_s": 143.8930792970059,
+      "speedup": 1.0,
+      "audio": {
+        "lufs_i": -28.5,
+        "rms": 0.018598062872931708,
+        "sample_peak": 0.2620694935321808,
+        "true_peak_dbfs": -11.6,
+        "clipping_ratio": 0.0
+      }
+    },
+    "ours": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/77a809c1-f872-494c-b922-b963dfc739e5.mp4",
+      "e2e_s": 132.1846681580064,
+      "speedup": 1.0885761662237856,
+      "audio": {
+        "lufs_i": -28.8,
+        "rms": 0.018252130435280647,
+        "sample_peak": 0.26204827427864075,
+        "true_peak_dbfs": -11.6,
+        "clipping_ratio": 0.0
+      },
+      "metrics": {
+        "frames": 124,
+        "mae": 4.0199454484447354,
+        "mse": 47.76040481751965,
+        "psnr": 31.340123616479822,
+        "ssim": 0.918892117132902,
+        "lpips": 0.06667333318581505,
+        "sharpness_ratio": 0.9791399221116093,
+        "temporal_delta_error": 3.6506320751779446,
+        "temporal_jitter_ratio": 0.9668518710006546,
+        "patch_boundary_ratio": 0.9924065087686909
+      }
+    },
+    "official_hybrid": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/127f5cdb-210e-4dfa-aca9-0ab90e8c8166.mp4",
+      "e2e_s": 131.56436181699974,
+      "speedup": 1.0937086404687226,
+      "audio": {
+        "lufs_i": -29.4,
+        "rms": 0.01756700651233219,
+        "sample_peak": 0.263755738735199,
+        "true_peak_dbfs": -11.6,
+        "clipping_ratio": 0.0
+      },
+      "metrics": {
+        "frames": 124,
+        "mae": 3.8349032978857718,
+        "mse": 52.96469680724606,
+        "psnr": 30.890938703308247,
+        "ssim": 0.9232821228106229,
+        "lpips": 0.056781172151527094,
+        "sharpness_ratio": 0.9623983904794475,
+        "temporal_delta_error": 3.367398341012195,
+        "temporal_jitter_ratio": 0.9848099334318177,
+        "patch_boundary_ratio": 0.9828175683414984
+      }
+    }
+  }
+}
