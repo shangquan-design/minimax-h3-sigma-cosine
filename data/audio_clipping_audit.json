@@ -102,9 +102,17 @@
     "dense_nonzero_cases": [],
     "candidate_nonzero_cases": []
   },
-  "ref2va": {
+  "fl2va_dynamic": {
     "unique_dense_outputs": 6,
     "candidate_outputs": 12,
+    "dense_nonzero_clipping_count": 0,
+    "candidate_nonzero_clipping_count": 0,
+    "dense_nonzero_cases": [],
+    "candidate_nonzero_cases": []
+  },
+  "ref2va": {
+    "unique_dense_outputs": 6,
+    "candidate_outputs": 18,
     "dense_nonzero_clipping_count": 0,
     "candidate_nonzero_clipping_count": 0,
     "dense_nonzero_cases": [],
