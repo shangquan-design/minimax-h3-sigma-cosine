@@ -1,0 +1,192 @@
+{
+  "haiyang_t2va": {
+    "unique_dense_outputs": 24,
+    "candidate_outputs": 48,
+    "dense_nonzero_clipping_count": 3,
+    "candidate_nonzero_clipping_count": 8,
+    "dense_nonzero_cases": [
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/996bd6fa-1c5d-4191-8c27-4df646419073.mp4",
+        "prompt": 3,
+        "seed": 1,
+        "clipping_ratio": 6.028163580246913e-06,
+        "true_peak_dbfs": 0.0
+      },
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/5f0edac4-bbae-47d2-9172-9dae0bb94a45.mp4",
+        "prompt": 3,
+        "seed": 4,
+        "clipping_ratio": 0.00010247878086419753,
+        "true_peak_dbfs": 0.2
+      },
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/5d7d3735-9bd5-4179-a82c-e46b5e7100fb.mp4",
+        "prompt": 3,
+        "seed": 5,
+        "clipping_ratio": 3.817836934156379e-05,
+        "true_peak_dbfs": 0.1
+      }
+    ],
+    "candidate_nonzero_cases": [
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/3a408ed4-d494-48f2-b341-fd770eeaa16e.mp4",
+        "arm": "middle_residual",
+        "prompt": 3,
+        "seed": 1,
+        "clipping_ratio": 1.0046939300411523e-05,
+        "true_peak_dbfs": 0.1
+      },
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/c5083945-c3f5-4d6b-8e9a-bd803fef7cb4.mp4",
+        "arm": "middle_residual",
+        "prompt": 3,
+        "seed": 2,
+        "clipping_ratio": 2.0093878600823047e-06,
+        "true_peak_dbfs": 0.0
+      },
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/c20ce0a9-a113-4197-9a68-e329aea3459e.mp4",
+        "arm": "middle_residual",
+        "prompt": 3,
+        "seed": 4,
+        "clipping_ratio": 0.00015874164094650207,
+        "true_peak_dbfs": 0.5
+      },
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/56f96e58-a0c5-4514-a081-015d3c67891c.mp4",
+        "arm": "middle_residual",
+        "prompt": 3,
+        "seed": 5,
+        "clipping_ratio": 8.037551440329218e-05,
+        "true_peak_dbfs": 0.2
+      },
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/f589f16e-8925-4520-b83f-d78819cc14e2.mp4",
+        "arm": "middle_residual_rewind",
+        "prompt": 3,
+        "seed": 0,
+        "clipping_ratio": 6.028163580246913e-06,
+        "true_peak_dbfs": 0.0
+      },
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/608fb27b-f106-4c29-9964-cda1b6c83b23.mp4",
+        "arm": "middle_residual_rewind",
+        "prompt": 3,
+        "seed": 1,
+        "clipping_ratio": 6.028163580246913e-06,
+        "true_peak_dbfs": 0.0
+      },
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/f20af674-c805-48f0-b27a-dd7ed89501da.mp4",
+        "arm": "middle_residual_rewind",
+        "prompt": 3,
+        "seed": 4,
+        "clipping_ratio": 8.64036779835391e-05,
+        "true_peak_dbfs": 0.4
+      },
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/140cf398-4809-4180-8ae8-c3d064530260.mp4",
+        "arm": "middle_residual_rewind",
+        "prompt": 3,
+        "seed": 5,
+        "clipping_ratio": 9.243184156378601e-05,
+        "true_peak_dbfs": 0.1
+      }
+    ]
+  },
+  "fl2va": {
+    "unique_dense_outputs": 6,
+    "candidate_outputs": 12,
+    "dense_nonzero_clipping_count": 0,
+    "candidate_nonzero_clipping_count": 0,
+    "dense_nonzero_cases": [],
+    "candidate_nonzero_cases": []
+  },
+  "ref2va": {
+    "unique_dense_outputs": 6,
+    "candidate_outputs": 12,
+    "dense_nonzero_clipping_count": 0,
+    "candidate_nonzero_clipping_count": 0,
+    "dense_nonzero_cases": [],
+    "candidate_nonzero_cases": []
+  },
+  "aggressive8_t2va": {
+    "unique_dense_outputs": 24,
+    "candidate_outputs": 48,
+    "dense_nonzero_clipping_count": 3,
+    "candidate_nonzero_clipping_count": 6,
+    "dense_nonzero_cases": [
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/996bd6fa-1c5d-4191-8c27-4df646419073.mp4",
+        "prompt": 3,
+        "seed": 1,
+        "clipping_ratio": 6.028163580246913e-06,
+        "true_peak_dbfs": 0.0
+      },
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/5f0edac4-bbae-47d2-9172-9dae0bb94a45.mp4",
+        "prompt": 3,
+        "seed": 4,
+        "clipping_ratio": 0.00010247878086419753,
+        "true_peak_dbfs": 0.2
+      },
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/5d7d3735-9bd5-4179-a82c-e46b5e7100fb.mp4",
+        "prompt": 3,
+        "seed": 5,
+        "clipping_ratio": 3.817836934156379e-05,
+        "true_peak_dbfs": 0.1
+      }
+    ],
+    "candidate_nonzero_cases": [
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/bd5068a3-f27c-410e-af56-c65466d36419.mp4",
+        "arm": "aggressive8",
+        "prompt": 3,
+        "seed": 1,
+        "clipping_ratio": 1.0046939300411523e-05,
+        "true_peak_dbfs": 0.1
+      },
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/ca4a8025-0562-4431-ad05-463b22e095f4.mp4",
+        "arm": "aggressive8",
+        "prompt": 3,
+        "seed": 4,
+        "clipping_ratio": 6.229102366255144e-05,
+        "true_peak_dbfs": 0.2
+      },
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/c5240ff9-a7b4-48ab-9534-b1d177da8f1c.mp4",
+        "arm": "aggressive8",
+        "prompt": 3,
+        "seed": 5,
+        "clipping_ratio": 7.032857510288066e-05,
+        "true_peak_dbfs": 0.1
+      },
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/4b4939e7-f841-47de-8b19-e9c30ff28085.mp4",
+        "arm": "aggressive8_rewind",
+        "prompt": 3,
+        "seed": 1,
+        "clipping_ratio": 1.0046939300411523e-05,
+        "true_peak_dbfs": 0.1
+      },
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/b629b7da-e998-46fe-b0bf-24a7391a9ce7.mp4",
+        "arm": "aggressive8_rewind",
+        "prompt": 3,
+        "seed": 4,
+        "clipping_ratio": 9.444122942386832e-05,
+        "true_peak_dbfs": 0.3
+      },
+      {
+        "path": "/home/sean/work/codex-h3-progressive/outputs/55a226b5-6873-431d-88e9-6145dab80a55.mp4",
+        "arm": "aggressive8_rewind",
+        "prompt": 3,
+        "seed": 5,
+        "clipping_ratio": 8.64036779835391e-05,
+        "true_peak_dbfs": 0.2
+      }
+    ]
+  }
+}

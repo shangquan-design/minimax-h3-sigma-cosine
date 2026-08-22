@@ -1,0 +1,113 @@
+{
+  "target": "the last train leaves at nine",
+  "results": {
+    "dense_seed0": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/1e67ced4-56c2-466c-b1e5-14b3352c253a.mp4",
+      "transcript": "The last train leaves at nine.",
+      "target_exact_substring": true,
+      "target_word_error_rate": 0.0
+    },
+    "dense_seed1": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/fabaa5ca-013f-4095-bc38-49df63adcf31.mp4",
+      "transcript": "The last train leaves at nine.",
+      "target_exact_substring": true,
+      "target_word_error_rate": 0.0
+    },
+    "dense_seed2": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/3c42ecb4-ffb5-4eb5-8452-6720331839f7.mp4",
+      "transcript": "The last train leaves at nine.",
+      "target_exact_substring": true,
+      "target_word_error_rate": 0.0
+    },
+    "dense_seed3": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/6305805d-eca1-4331-b62f-4903c33cdb4a.mp4",
+      "transcript": "The last train leaves at nine.",
+      "target_exact_substring": true,
+      "target_word_error_rate": 0.0
+    },
+    "dense_seed4": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/282c51cc-b864-4846-8fee-079d911850a0.mp4",
+      "transcript": "The last train leaves at 9.",
+      "target_exact_substring": false,
+      "target_word_error_rate": 0.16666666666666666
+    },
+    "dense_seed5": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/99aaec25-6f5a-4a67-be2a-090b1e209b86.mp4",
+      "transcript": "The last train leaves at nine.",
+      "target_exact_substring": true,
+      "target_word_error_rate": 0.0
+    },
+    "middle_residual_seed0": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/0d88a451-ce2a-4cf4-88cc-ee721ce50e5b.mp4",
+      "transcript": "The last train leaves at nine.",
+      "target_exact_substring": true,
+      "target_word_error_rate": 0.0
+    },
+    "middle_residual_seed1": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/ad22837a-c7b6-48a9-a61c-ab751d706f36.mp4",
+      "transcript": "The last train leaves at nine.",
+      "target_exact_substring": true,
+      "target_word_error_rate": 0.0
+    },
+    "middle_residual_seed2": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/70a14f7f-1023-4c70-b7eb-d76b9734c4da.mp4",
+      "transcript": "The last train leaves at nine.",
+      "target_exact_substring": true,
+      "target_word_error_rate": 0.0
+    },
+    "middle_residual_seed3": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/b84fa447-9553-44c5-8504-1dbeac3feb92.mp4",
+      "transcript": "The last train leaves at nine.",
+      "target_exact_substring": true,
+      "target_word_error_rate": 0.0
+    },
+    "middle_residual_seed4": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/91afb42f-6bd3-4eb1-8d1d-4d62a1dd6209.mp4",
+      "transcript": "The last train leaves at 9.",
+      "target_exact_substring": false,
+      "target_word_error_rate": 0.16666666666666666
+    },
+    "middle_residual_seed5": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/395dbd73-be1a-473e-aba4-3ed642df369f.mp4",
+      "transcript": "The last train leaves at nine.",
+      "target_exact_substring": true,
+      "target_word_error_rate": 0.0
+    },
+    "middle_residual_rewind_seed0": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/dfa7bfce-d28d-42be-964b-1db33b44c5c2.mp4",
+      "transcript": "The last train leaves at nine.",
+      "target_exact_substring": true,
+      "target_word_error_rate": 0.0
+    },
+    "middle_residual_rewind_seed1": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/ac88a40d-a66c-4e86-8271-54b80c7c2359.mp4",
+      "transcript": "The last train leaves at nine.",
+      "target_exact_substring": true,
+      "target_word_error_rate": 0.0
+    },
+    "middle_residual_rewind_seed2": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/2137077f-0ac4-4194-8372-500493415480.mp4",
+      "transcript": "The last train leaves at nine.",
+      "target_exact_substring": true,
+      "target_word_error_rate": 0.0
+    },
+    "middle_residual_rewind_seed3": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/a02a6994-98ae-4b98-b2f5-2e2492085762.mp4",
+      "transcript": "The last train leaves at nine.",
+      "target_exact_substring": true,
+      "target_word_error_rate": 0.0
+    },
+    "middle_residual_rewind_seed4": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/8be7a95d-375b-4926-954e-4cd2e0b8433e.mp4",
+      "transcript": "The last train leaves at 9.",
+      "target_exact_substring": false,
+      "target_word_error_rate": 0.16666666666666666
+    },
+    "middle_residual_rewind_seed5": {
+      "path": "/home/sean/work/codex-h3-progressive/outputs/0a1d7939-3ec9-416c-9630-99df15a5ea97.mp4",
+      "transcript": "The last train leaves at nine.",
+      "target_exact_substring": true,
+      "target_word_error_rate": 0.0
+    }
+  }
+}
