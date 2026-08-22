@@ -1,0 +1,103 @@
+{
+  "pairs": {
+    "seed0_rewind15": {
+      "seed": 0,
+      "arm": "rewind15",
+      "dense_path": "/home/sean/work/codex-h3-progressive/outputs/fb7b3826-d876-4419-bfe2-9cc3e2c05a35.mp4",
+      "candidate_path": "/home/sean/work/codex-h3-progressive/outputs/823e773c-d2cf-4b51-8edc-832fd514ba72.mp4",
+      "dense_e2e_s": 143.94984903297154,
+      "candidate_e2e_s": 107.4026812039956,
+      "speedup": 1.3402817082337075,
+      "dense_audio": {
+        "lufs_i": -43.1,
+        "rms": 0.007468185889858392,
+        "sample_peak": 0.036804113537073135,
+        "true_peak_dbfs": -28.7,
+        "clipping_ratio": 0.0
+      },
+      "candidate_audio": {
+        "lufs_i": -42.7,
+        "rms": 0.007480182227590429,
+        "sample_peak": 0.03779809549450874,
+        "true_peak_dbfs": -28.4,
+        "clipping_ratio": 0.0
+      },
+      "metrics": {
+        "frames": 124,
+        "mae": 3.796536132212608,
+        "mse": 34.07074517588462,
+        "psnr": 32.80698728555224,
+        "ssim": 0.9182071439163287,
+        "lpips": 0.07962565442487117,
+        "sharpness_ratio": 0.9392218882266022,
+        "temporal_delta_error": 2.7089526711440666,
+        "temporal_jitter_ratio": 0.9770767375041339,
+        "patch_boundary_ratio": 1.0175248327698858
+      }
+    }
+  },
+  "summary": {
+    "rewind15": {
+      "speedup": {
+        "mean": 1.3402817082337075,
+        "std": 0.0
+      },
+      "candidate_e2e_s": {
+        "mean": 107.4026812039956,
+        "std": 0.0
+      },
+      "mae": {
+        "mean": 3.796536132212608,
+        "std": 0.0
+      },
+      "mse": {
+        "mean": 34.07074517588462,
+        "std": 0.0
+      },
+      "psnr": {
+        "mean": 32.80698728555224,
+        "std": 0.0
+      },
+      "ssim": {
+        "mean": 0.9182071439163287,
+        "std": 0.0
+      },
+      "lpips": {
+        "mean": 0.07962565442487117,
+        "std": 0.0
+      },
+      "sharpness_ratio": {
+        "mean": 0.9392218882266022,
+        "std": 0.0
+      },
+      "temporal_delta_error": {
+        "mean": 2.7089526711440666,
+        "std": 0.0
+      },
+      "temporal_jitter_ratio": {
+        "mean": 0.9770767375041339,
+        "std": 0.0
+      },
+      "patch_boundary_ratio": {
+        "mean": 1.0175248327698858,
+        "std": 0.0
+      },
+      "audio_delta_lufs_i": {
+        "mean": 0.3999999999999986,
+        "std": 0.0
+      },
+      "audio_delta_rms": {
+        "mean": 1.199633773203701e-05,
+        "std": 0.0
+      },
+      "audio_delta_true_peak_dbfs": {
+        "mean": 0.3000000000000007,
+        "std": 0.0
+      },
+      "audio_delta_clipping_ratio": {
+        "mean": 0.0,
+        "std": 0.0
+      }
+    }
+  }
+}
