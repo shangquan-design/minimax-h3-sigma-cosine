@@ -1,0 +1,26 @@
+<h2>Where should a 15-step low-resolution window start?</h2>
+<p>Every arm uses exactly 15 half-resolution denoising steps with noise-level-scaled high-frequency residual transport, eight-bin cosine blending, and scheduler rewind. All seed-0 arms take about 107.3 seconds, or 1.34× versus the same 143.95-second Dense reference.</p>
+<h3>Coarse sweep and one-step refinement · seed 0</h3>
+<table><tr><th>window</th><th>E2E</th><th>speedup</th><th>SSIM</th><th>PSNR</th><th>LPIPS</th><th>sharpness</th><th>jitter</th><th>patch boundary</th><th>Δ loudness</th></tr>
+<tr><td>[10,25)</td><td>107.37 s</td><td>1.3407×</td><td>0.7560</td><td>21.57 dB</td><td>0.2552</td><td>1.2132</td><td>1.0732</td><td>1.1752</td><td>-2.1 dB</td></tr>
+<tr><td>[15,30)</td><td>107.37 s</td><td>1.3407×</td><td>0.8744</td><td>27.67 dB</td><td>0.1274</td><td>0.9922</td><td>1.0203</td><td>1.0385</td><td>-1.7 dB</td></tr>
+<tr><td>[18,33)</td><td>107.23 s</td><td>1.3425×</td><td>0.9017</td><td>30.24 dB</td><td>0.0989</td><td>0.9587</td><td>1.0056</td><td>1.0135</td><td>-0.2 dB</td></tr>
+<tr><td>[19,34)</td><td>107.48 s</td><td>1.3394×</td><td>0.9069</td><td>31.42 dB</td><td>0.0887</td><td>0.9504</td><td>0.9880</td><td>1.0134</td><td>+0.2 dB</td></tr>
+<tr><td><b>[20,35)</b></td><td>107.39 s</td><td>1.3404×</td><td>0.9182</td><td>32.81 dB</td><td>0.0796</td><td>0.9392</td><td>0.9771</td><td>1.0175</td><td>+0.4 dB</td></tr>
+<tr><td>[21,36)</td><td>107.33 s</td><td>1.3412×</td><td>0.9272</td><td>33.40 dB</td><td><b>0.0734</b></td><td>0.9135</td><td>0.9523</td><td>1.0146</td><td>+0.7 dB</td></tr>
+<tr><td>[22,37)</td><td>107.34 s</td><td>1.3411×</td><td><b>0.9291</b></td><td><b>33.60 dB</b></td><td>0.0737</td><td>0.9006</td><td>0.9465</td><td>1.0149</td><td>+0.9 dB</td></tr>
+<tr><td>[23,38)</td><td>107.38 s</td><td>1.3405×</td><td>0.9096</td><td>30.68 dB</td><td>0.1405</td><td>0.9057</td><td>1.0282</td><td>1.0999</td><td>+1.0 dB</td></tr>
+<tr><td>[24,39)</td><td>107.37 s</td><td>1.3407×</td><td>0.9031</td><td>29.29 dB</td><td>0.1639</td><td>0.8954</td><td>1.0666</td><td>1.1254</td><td>+1.2 dB</td></tr>
+<tr><td>[25,40)</td><td>107.43 s</td><td>1.3399×</td><td>0.8886</td><td>28.54 dB</td><td>0.1751</td><td>0.8754</td><td>1.1053</td><td>1.1434</td><td>+1.2 dB</td></tr>
+<tr><td>[30,45)</td><td>107.38 s</td><td>1.3406×</td><td>0.8418</td><td>26.05 dB</td><td>0.2886</td><td>0.7242</td><td>1.6870</td><td>1.2957</td><td>+1.3 dB</td></tr></table>
+<p>Seed 0 puts the SSIM/PSNR peak at start 22 and the LPIPS peak at start 21. Quality falls abruptly after start 22 because too few full-resolution steps remain after the low-resolution window.</p>
+<h3>Six-seed validation of the apparent optimum</h3>
+<table><tr><th>window</th><th>evidence</th><th>E2E</th><th>speedup</th><th>SSIM</th><th>PSNR</th><th>LPIPS</th><th>sharpness</th><th>jitter</th><th>patch boundary</th></tr>
+<tr><td><b>[20,35) · retained</b></td><td>6 seeds</td><td>≈107.45 s</td><td>≈1.339×</td><td>0.92423</td><td><b>30.3835 dB</b></td><td><b>0.09045</b></td><td><b>0.95163</b></td><td>0.99889</td><td>0.99782</td></tr>
+<tr><td>[21,36)</td><td>6 seeds</td><td>107.480 ± 0.069 s</td><td>1.33847 ± 0.00149×</td><td><b>0.92433 ± 0.00950</b></td><td>30.3814 ± 2.0349 dB</td><td>0.09283 ± 0.01902</td><td>0.94465 ± 0.04033</td><td>1.00159 ± 0.09013</td><td>0.99975 ± 0.04938</td></tr>
+<tr><td>[22,37)</td><td>6 seeds</td><td>107.439 ± 0.053 s</td><td>1.33898 ± 0.00157×</td><td>0.92286 ± 0.00957</td><td>30.1741 ± 2.2186 dB</td><td>0.09717 ± 0.01916</td><td>0.93842 ± 0.04123</td><td><b>0.99947 ± 0.08062</b></td><td>1.00183 ± 0.05013</td></tr></table>
+<p><b>Why start 20 remains selected.</b> The seed-0 improvement at starts 21–22 does not generalize. [20,35) has higher SSIM and lower LPIPS than [21,36) on 4/6 paired seeds. Mean PSNR is effectively tied, while [20,35) preserves more high-frequency detail. Start 22 is worse overall; latency is indistinguishable.</p>
+<div class='warn'><b>Decision:</b> retain the 15-step window at <b>[20,35)</b>. This automatic-metric location decision is not a new human perceptual PASS; release still requires multi-prompt human review.</div>
+<h3>Full-resolution review · Dense / start 20 / start 21 / start 22</h3><p>Each player contains four selectable audio tracks.</p><div class='videos' id='rewind15-location-review'></div>
+<script>window.addEventListener('DOMContentLoaded',()=>{addReviews('rewind15-location-review',Array.from({length:6},(_,i)=>['Seed '+i,'videos/rewind15_location/seed'+i+'.mp4']))});</script>
+<p class='muted'>Raw data: <a href='data/rewind15_location_sweep_through_start22.json'>sweep through start 22</a> · <a href='data/rewind15_location_sweep_start23_24.json'>starts 23–24</a> · <a href='data/rewind15_location_validate.json'>six-seed validation</a> · <a href='data/rewind15_location_report.md'>Markdown report</a>.</p>

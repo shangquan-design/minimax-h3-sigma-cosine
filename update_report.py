@@ -12,6 +12,7 @@ s=s.replace("<div class='big'>34.72 ± 0.97 dB</div>same-seed peak signal-to-noi
 s=s.replace("<b>Current candidate; multi-seed human review pending</b>","<b>Human visual/audio review PASS on 6/6 seeds</b>")
 s=s.replace("<td>pending</td>","<td>PASS</td>")
 s=s.replace("human review pending","human PASS").replace("tag '","tag pass'")
+s=s.replace("The 5-step rewind method now has paired T2VA, FL2VA, and Ref2VA results. An 8-step rewind candidate reaches 1.155× and passes automated metrics; broader human review is still pending.","The 5-step rewind method has paired T2VA, FL2VA, and Ref2VA results. The 8-step rewind candidate reaches 1.155× and passed human review. A 15-step location ablation retains [20,35) at 1.339×; its broader multi-prompt human gate remains pending.")
 marker="<h2>Current method</h2>"
 new="""<h2>What changed after the original report</h2>
 <p>The initial report covered one prompt and six seeds. The follow-up adds a direct reproduction of the documented SGLang DCT transition, an early-window residual-transport ablation, a scheduler-rewind ablation, and a four-prompt × six-seed paired evaluation.</p>
@@ -44,4 +45,8 @@ new="""<h2>What changed after the original report</h2>
 """
 if new not in s:
  s=s.replace(marker,new+marker)
+location_marker="<h2>Completed modality and aggressive-window evaluation</h2>"
+location_section=Path("location_section.html").read_text()
+if location_section not in s:
+ s=s.replace(location_marker,location_section+location_marker)
 p.write_text(s)
