@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MiniMax-H3 Cache-Aligned Coarse-Attention — Technical Report</title>
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --surface-2:      #ffffff;
+    --page:           #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --gridline:       #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --series-1:       #2a78d6;
+    --series-1-soft:  #cde2fb;
+    --good:           #0ca30c;
+    --good-text:      #006300;
+    --warning:        #fab219;
+    --critical:       #d03b3b;
+    --serious:        #ec835a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --surface-2:      #202020;
+      --page:           #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --gridline:       #2c2c2a;
+      --baseline:       #383835;
+      --border:         rgba(255,255,255,0.10);
+      --series-1:       #3987e5;
+      --series-1-soft:  #184f95;
+      --good:           #0ca30c;
+      --good-text:      #0ca30c;
+      --warning:        #fab219;
+      --critical:       #e66767;
+      --serious:        #ec835a;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-1:      #1a1a19;
+    --surface-2:      #202020;
+    --page:           #0d0d0d;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --gridline:       #2c2c2a;
+    --baseline:       #383835;
+    --border:         rgba(255,255,255,0.10);
+    --series-1:       #3987e5;
+    --series-1-soft:  #184f95;
+    --good:           #0ca30c;
+    --good-text:      #0ca30c;
+    --warning:        #fab219;
+    --critical:       #e66767;
+    --serious:        #ec835a;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
+  /* ---------- header ---------- */
+  header.hero {
+    background: linear-gradient(180deg, var(--surface-1), var(--page));
+    border-bottom: 1px solid var(--border);
+    padding: 48px 0 32px;
+  }
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--series-1);
+    margin: 0 0 10px;
+  }
+  h1 { font-size: clamp(28px, 4vw, 40px); margin: 0 0 12px; letter-spacing: -0.01em; }
+  .sub { color: var(--text-secondary); font-size: 17px; max-width: 74ch; margin: 0 0 22px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--text-secondary); font-size: 13px; padding: 6px 12px; border-radius: 999px;
+  }
+  .chip b { color: var(--text-primary); font-weight: 600; }
+
+  .theme-toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 50;
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--text-secondary); font-size: 12px; padding: 7px 12px;
+    border-radius: 999px; cursor: pointer; font-family: inherit;
+  }
+  .theme-toggle:hover { color: var(--text-primary); }
+
+  /* ---------- nav ---------- */
+  nav.toc {
+    position: sticky; top: 0; z-index: 40;
+    background: color-mix(in srgb, var(--page) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav.toc .wrap { display: flex; gap: 4px; overflow-x: auto; padding: 10px 20px; scrollbar-width: thin; }
+  nav.toc a {
+    white-space: nowrap; font-size: 13px; color: var(--text-secondary);
+    text-decoration: none; padding: 7px 12px; border-radius: 8px;
+  }
+  nav.toc a:hover { background: var(--surface-2); color: var(--text-primary); }
+
+  /* ---------- sections ---------- */
+  section { padding: 44px 0; border-bottom: 1px solid var(--border); }
+  section:last-of-type { border-bottom: none; }
+  h2 { font-size: 23px; margin: 0 0 6px; letter-spacing: -0.01em; }
+  h3 { font-size: 16px; margin: 26px 0 10px; }
+  .section-kicker { color: var(--text-muted); font-size: 13px; margin: 0 0 20px; }
+  p { color: var(--text-secondary); }
+  .prose { max-width: 76ch; }
+  .prose strong { color: var(--text-primary); }
+
+  /* ---------- stat tiles ---------- */
+  .stat-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px; margin-top: 18px;
+  }
+  .tile {
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .tile .label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; }
+  .tile .value { font-size: 26px; font-weight: 650; margin: 4px 0 2px; font-variant-numeric: tabular-nums; }
+  .tile .delta { font-size: 13px; }
+  .delta.good { color: var(--good-text); }
+  .delta.flat { color: var(--text-muted); }
+
+  /* ---------- decision banner ---------- */
+  .banner {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: color-mix(in srgb, var(--warning) 14%, var(--surface-2));
+    border: 1px solid color-mix(in srgb, var(--warning) 40%, var(--border));
+    border-radius: 12px; padding: 16px 18px; margin-top: 18px;
+  }
+  .banner .icon { font-size: 20px; line-height: 1; }
+  .banner .title { font-weight: 650; margin: 0 0 4px; }
+  .banner p { margin: 0; font-size: 14px; }
+
+  /* ---------- method diagram ---------- */
+  .timeline { margin-top: 22px; }
+  .timeline-track {
+    display: flex; height: 56px; border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .seg { display: flex; align-items: center; justify-content: center; font-size: 12.5px; font-weight: 600; text-align: center; padding: 4px 8px; }
+  .seg-warmup   { flex: 10 0 0; background: var(--gridline); color: var(--text-secondary); }
+  .seg-modified { flex: 30 0 0; background: var(--series-1); color: #fff; }
+  .seg-cachetail{ flex: 10 0 0; background: var(--gridline); color: var(--text-secondary); }
+  .timeline-labels { display: flex; margin-top: 6px; font-size: 12px; color: var(--text-muted); }
+  .timeline-labels span:nth-child(1) { flex: 10 0 0; }
+  .timeline-labels span:nth-child(2) { flex: 30 0 0; text-align: center; }
+  .timeline-labels span:nth-child(3) { flex: 10 0 0; text-align: right; }
+
+  .step-strip { display: flex; gap: 2px; margin-top: 14px; flex-wrap: wrap; }
+  .step-cell { width: 18px; height: 18px; border-radius: 3px; flex: 0 0 auto; }
+  .step-full { background: var(--series-1); }
+  .step-hit  { background: var(--gridline); border: 1px solid var(--border); }
+  .step-legend { display: flex; gap: 18px; margin-top: 10px; font-size: 12.5px; color: var(--text-secondary); flex-wrap: wrap; }
+  .step-legend .sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+  .grid-compare { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-end; margin-top: 22px; }
+  .grid-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+  .grid-card .cap { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; }
+  .grid-card .dims { font-weight: 650; font-size: 15px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+  .swatch-grid { display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); margin: 0 auto; }
+  .swatch-cell { background: var(--series-1-soft); }
+  .arrow { align-self: center; color: var(--text-muted); font-size: 24px; padding-bottom: 30px; }
+
+  .anchor-note {
+    margin-top: 18px; background: var(--surface-2); border: 1px dashed var(--border);
+    border-radius: 12px; padding: 14px 16px; font-size: 14px; color: var(--text-secondary);
+  }
+
+  /* ---------- tables ---------- */
+  .table-wrap { overflow-x: auto; margin-top: 16px; border: 1px solid var(--border); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 14px; }
+  thead th {
+    text-align: left; background: var(--surface-2); color: var(--text-muted);
+    font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; font-weight: 600;
+    padding: 10px 14px; border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  tbody td { padding: 10px 14px; border-bottom: 1px solid var(--gridline); font-variant-numeric: tabular-nums; color: var(--text-primary); white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--surface-2); }
+  td.dim, span.dim { color: var(--text-muted); }
+  .tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
+  .tag-ocean { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good-text); }
+  .tag-wuxia { background: color-mix(in srgb, var(--critical) 16%, transparent); color: var(--critical); }
+
+  /* ---------- bar charts ---------- */
+  .chart-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px 16px; margin-top: 18px; }
+  .chart-title { font-size: 14px; font-weight: 650; margin: 0 0 2px; }
+  .chart-sub { font-size: 12.5px; color: var(--text-muted); margin: 0 0 18px; }
+  .chart-row { display: grid; grid-template-columns: 84px 1fr 64px; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .chart-row .rlabel { font-size: 13px; color: var(--text-secondary); text-align: right; }
+  .chart-track { position: relative; height: 22px; background: var(--gridline); border-radius: 5px; }
+  .chart-fill { position: absolute; top: 0; bottom: 0; background: var(--series-1); border-radius: 5px; }
+  .chart-fill.neg { background: var(--serious); }
+  .chart-row .rvalue { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .chart-marker { position: absolute; top: -6px; bottom: -6px; width: 0; border-left: 2px dashed var(--text-muted); }
+  .chart-marker.solid { border-left: 2px solid var(--baseline); }
+  .chart-marker .mlabel {
+    position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+    font-size: 10.5px; color: var(--text-muted); white-space: nowrap;
+  }
+  .chart-key { display: flex; gap: 18px; font-size: 12px; color: var(--text-muted); margin-top: 22px; flex-wrap: wrap; }
+  .chart-key .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+  /* ---------- fidelity callouts ---------- */
+  .callout-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-top: 18px; }
+  .callout { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+  .callout .htag { font-size: 12px; font-weight: 650; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 8px; }
+  .callout.ocean .htag { color: var(--good-text); }
+  .callout.wuxia .htag { color: var(--critical); }
+  .callout .stat-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; border-bottom: 1px solid var(--gridline); }
+  .callout .stat-row:last-child { border-bottom: none; }
+  .callout .stat-row span:last-child { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* ---------- video grid ---------- */
+  .prompt-group { margin-top: 28px; }
+  .prompt-group h4 { font-size: 14px; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+  .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .vcard { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .vcard video { display: block; width: 100%; aspect-ratio: 16/9; background: #000; }
+  .vcard .vbody { padding: 10px 12px 12px; }
+  .vcard .vname { font-size: 12px; color: var(--text-muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; word-break: break-all; margin-bottom: 8px; }
+  .vcard .vmetrics { display: flex; flex-wrap: wrap; gap: 6px; }
+  .mchip { font-size: 11px; font-variant-numeric: tabular-nums; padding: 3px 7px; border-radius: 6px; background: var(--gridline); color: var(--text-secondary); }
+  .mchip.up { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good-text); }
+  .mchip.down { background: color-mix(in srgb, var(--critical) 16%, transparent); color: var(--critical); }
+
+  /* ---------- glossary ---------- */
+  .glossary { margin-top: 18px; display: grid; gap: 12px; }
+  .gterm { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .gterm dt { font-weight: 650; font-size: 14px; margin-bottom: 4px; }
+  .gterm dd { margin: 0; font-size: 13.5px; color: var(--text-secondary); }
+
+  /* ---------- limitations / decision ---------- */
+  ul.limits { padding-left: 20px; }
+  ul.limits li { color: var(--text-secondary); margin-bottom: 10px; }
+  ul.limits li strong { color: var(--text-primary); }
+
+  .decision-card {
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px;
+    padding: 24px; margin-top: 18px;
+  }
+  .decision-card .verdict {
+    display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px;
+    color: var(--critical); margin-bottom: 10px;
+  }
+  .gate-compare { display: flex; gap: 26px; margin: 16px 0; flex-wrap: wrap; }
+  .gate-compare .g { text-align: center; }
+  .gate-compare .g .n { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .gate-compare .g .l { font-size: 12px; color: var(--text-muted); }
+
+  footer { padding: 32px 0 60px; text-align: center; color: var(--text-muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .chart-row { grid-template-columns: 68px 1fr 54px; gap: 8px; }
+    .grid-compare { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" type="button">🌓 Toggle theme</button>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">MiniMax-H3 · Cache-Aligned Coarse-Attention</p>
+    <h1>Cache-Aligned Resolution: Coarse-Attention on Cache-Miss Steps</h1>
+    <p class="sub">
+      A measured, paired evaluation of restricting expensive video-attention compute to a coarse
+      spatial grid — plus a saved high-frequency anchor — on the genuine full-compute steps that
+      MiniMax-H3's caching schedule cannot skip. Real end-to-end speedup, below the predeclared
+      ship gate.
+    </p>
+    <div class="chips">
+      <span class="chip">🖥️ <b>1× AMD MI355X</b> GPU</span>
+      <span class="chip">🎬 <b>T2VA</b> 1344×768 · 124 frames · 5.1667s · 50 steps</span>
+      <span class="chip">🧪 <b>5 prompts × 4 seeds</b> = 20 paired runs</span>
+      <span class="chip">♻️ order-1 cache · τ .80 · warmup 6 · horizon 12 · cap 10</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <a href="#summary">Summary</a>
+    <a href="#method">Method</a>
+    <a href="#results">Aggregate results</a>
+    <a href="#per-prompt">Per-prompt</a>
+    <a href="#fidelity">Fidelity</a>
+    <a href="#videos">Review videos</a>
+    <a href="#glossary">Metric glossary</a>
+    <a href="#limitations">Limitations</a>
+    <a href="#decision">Decision</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ================= SUMMARY ================= -->
+  <section id="summary">
+    <h2>Executive summary</h2>
+    <p class="section-kicker">What changed, what it cost, what it bought</p>
+    <div class="prose">
+      <p>
+        MiniMax-H3's order-1 cascading cache already skips most attention/MLP/residual compute across
+        the 50-step denoise schedule. This experiment narrows scope further: on the steps the cache
+        <em>cannot</em> skip — genuine full-compute steps inside blocks <strong>[10, 40)</strong> — the
+        video-attention context is computed on a coarse <strong>10×18</strong> spatial grid instead of
+        the dense <strong>24×42</strong> grid, with a σ-scaled saved high-frequency anchor added back to
+        limit detail loss. Cache-hit timesteps and blocks outside that range are left completely untouched.
+      </p>
+      <p>
+        Across 20 paired prompt/seed runs, end-to-end latency dropped from
+        <strong>33.028 ± 2.236 s</strong> to <strong>32.235 ± 1.959 s</strong> — a
+        <strong>1.0245×</strong> speedup (<strong>2.4% lower E2E time</strong>), faster on
+        <strong>15 of 20</strong> pairs, paired t(19) = 3.70, p = .0015. Denoise-only time moved from
+        28.821 s to 28.088 s (1.0258×). The effect is statistically real and directionally consistent,
+        but it <strong>misses the predeclared 3% ship gate</strong>, and visual fidelity is
+        <strong>content-dependent</strong>: static/low-motion scenes are pixel-identical, while
+        fine-detail, high-motion scenes (e.g. wuxia choreography) show visible softening. This method is
+        <strong>not proposed for PR</strong> in its current form.
+      </p>
+    </div>
+
+    <div class="stat-grid">
+      <div class="tile">
+        <div class="label">E2E speedup</div>
+        <div class="value">1.0245×</div>
+        <div class="delta good">↓ 2.4% wall-clock, 33.028s → 32.235s</div>
+      </div>
+      <div class="tile">
+        <div class="label">Denoise-only speedup</div>
+        <div class="value">1.0258×</div>
+        <div class="delta good">↓ 2.5%, 28.821s → 28.088s</div>
+      </div>
+      <div class="tile">
+        <div class="label">Paired significance (E2E)</div>
+        <div class="value">p = .0015</div>
+        <div class="delta flat">t(19) = 3.70 · 15 / 20 pairs faster</div>
+      </div>
+      <div class="tile">
+        <div class="label">Mean SSIM vs. reference</div>
+        <div class="value">0.9118</div>
+        <div class="delta flat">± 0.0835 · content-dependent</div>
+      </div>
+      <div class="tile">
+        <div class="label">Ship gate (predeclared)</div>
+        <div class="value">3.0%</div>
+        <div class="delta flat" style="color:var(--critical)">Missed — achieved 2.4%</div>
+      </div>
+    </div>
+
+    <div class="banner">
+      <div class="icon">⚠️</div>
+      <div>
+        <p class="title">Not proposed for PR</p>
+        <p>The measured effect is real but falls short of the 3% end-to-end speedup ship gate agreed
+        before running this experiment, and gains concentrate unevenly across content types. See
+        <a href="#decision">Decision</a> for the full rationale.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= METHOD ================= -->
+  <section id="method">
+    <h2>Method</h2>
+    <p class="section-kicker">Where the change applies, and what it does there</p>
+    <div class="prose">
+      <p>
+        The cache's order-1 policy (τ = .80, 6-step warmup, 12-step horizon, cap 10) already decides,
+        step by step, whether to reuse its cached residual payload and skip the DiT stack or run a genuine compute. This method does not touch
+        that decision. It only changes genuine DiT computations after an eight-step coarse-attention
+        warmup, and only inside transformer blocks <strong>[10, 40)</strong>.
+      </p>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-track">
+        <div class="seg seg-warmup">Blocks 0–9<br>exact</div>
+        <div class="seg seg-modified">Blocks 10–39 — coarse video attention on genuine computes</div>
+        <div class="seg seg-cachetail">Blocks 40–49<br>exact</div>
+      </div>
+      <div class="timeline-labels">
+        <span>full attention</span>
+        <span>hidden / Q / MLP / residual / output remain full resolution</span>
+        <span>full attention</span>
+      </div>
+    </div>
+
+    <h3>Inside the modified block range</h3>
+    <p class="prose" style="font-size:14px;">
+      At each timestep, the cascade still decides whether the entire DiT is a cache hit or a genuine
+      full compute. Only genuine computes reach the modified blocks. The pattern below is illustrative of
+      that mix — not a literal per-step trace — and shows what changes on each kind of step.
+    </p>
+    <div class="step-strip">
+      <!-- illustrative 30-cell pattern reflecting a warmup-then-intermittent-hit cache shape -->
+      <div class="step-cell step-full"></div><div class="step-cell step-full"></div><div class="step-cell step-full"></div>
+      <div class="step-cell step-hit"></div><div class="step-cell step-hit"></div>
+      <div class="step-cell step-full"></div>
+      <div class="step-cell step-hit"></div><div class="step-cell step-hit"></div><div class="step-cell step-hit"></div>
+      <div class="step-cell step-full"></div>
+      <div class="step-cell step-hit"></div><div class="step-cell step-hit"></div><div class="step-cell step-hit"></div><div class="step-cell step-hit"></div>
+      <div class="step-cell step-full"></div>
+      <div class="step-cell step-hit"></div><div class="step-cell step-hit"></div><div class="step-cell step-hit"></div>
+      <div class="step-cell step-full"></div>
+      <div class="step-cell step-hit"></div><div class="step-cell step-hit"></div><div class="step-cell step-hit"></div><div class="step-cell step-hit"></div>
+      <div class="step-cell step-full"></div>
+      <div class="step-cell step-hit"></div><div class="step-cell step-hit"></div><div class="step-cell step-hit"></div>
+      <div class="step-cell step-full"></div>
+      <div class="step-cell step-hit"></div><div class="step-cell step-hit"></div>
+    </div>
+    <div class="step-legend">
+      <span><span class="sw" style="background:var(--series-1)"></span>Genuine full-compute step — coarse attention + anchor applied</span>
+      <span><span class="sw" style="background:var(--gridline);border:1px solid var(--border)"></span>Cache-hit step — untouched, reused</span>
+    </div>
+
+    <h3>What changes on a genuine full-compute step</h3>
+    <div class="prose">
+      <p style="font-size:14px;">
+        Hidden states, Q projection, MLP, residual add, and output projection are all still computed in
+        full — nothing there is approximated. The only change is the spatial resolution of the
+        video-attention <em>context</em> used inside that full computation:
+      </p>
+    </div>
+    <div class="grid-compare">
+      <div class="grid-card">
+        <div class="cap">Reference: dense context</div>
+        <div class="swatch-grid" id="grid-dense"></div>
+        <div class="dims">24 × 42</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="grid-card">
+        <div class="cap">Candidate: coarse context</div>
+        <div class="swatch-grid" id="grid-coarse"></div>
+        <div class="dims">10 × 18</div>
+      </div>
+    </div>
+    <div class="anchor-note">
+      <strong>σ-scaled high-frequency anchor:</strong> a prior exact attention computation saves the high-frequency component of the full attention output. Later coarse computations upsample their output and restore that saved component, scaled by the current denoising σ. This is what keeps low-motion, low-detail content close to
+      pixel-identical (see <a href="#fidelity">Fidelity</a>) while the coarse grid does the work of
+      cutting attention cost on the steps that matter for speed.
+    </div>
+  </section>
+
+  <!-- ================= AGGREGATE RESULTS ================= -->
+  <section id="results">
+    <h2>Aggregate results</h2>
+    <p class="section-kicker">n = 20 paired runs (5 prompts × 4 seeds), reference vs. candidate</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Metric</th><th>Reference</th><th>Candidate</th><th>Δ</th><th>Speedup</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>End-to-end latency (s)</td>
+            <td>33.028 ± 2.236</td>
+            <td>32.235 ± 1.959</td>
+            <td class="dim">−0.793 s (−2.4%)</td>
+            <td><strong>1.0245×</strong> ± 0.0286</td>
+          </tr>
+          <tr>
+            <td>Denoise-only latency (s)</td>
+            <td>28.821 ± 2.259</td>
+            <td>28.088 ± 1.958</td>
+            <td class="dim">−0.733 s (−2.5%)</td>
+            <td><strong>1.0258×</strong> ± 0.0324</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Paired significance</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Test</th><th>t statistic</th><th>p-value</th><th>df</th><th>Reading</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>E2E paired t-test</td>
+            <td>3.695</td>
+            <td>.0015</td>
+            <td>19</td>
+            <td class="dim">Significant — the speedup is not noise</td>
+          </tr>
+          <tr>
+            <td>Denoise paired t-test</td>
+            <td>3.436</td>
+            <td>.0028</td>
+            <td>19</td>
+            <td class="dim">Significant, consistent with E2E</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Fidelity &amp; quality, aggregate</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Metric</th><th>Mean ± std</th><th>What it means here</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>SSIM</td><td>0.9118 ± 0.0835</td><td class="dim">Structural similarity vs. reference frames</td></tr>
+          <tr><td>LPIPS</td><td>0.1004 ± 0.1092</td><td class="dim">Learned perceptual distance — lower is closer</td></tr>
+          <tr><td>PSNR (dB)</td><td>45.21 ± 28.90</td><td class="dim">Pulled high by pixel-identical low-motion runs</td></tr>
+          <tr><td>Sharpness ratio</td><td>0.9733 ± 0.0340</td><td class="dim">Candidate/reference detail retention</td></tr>
+          <tr><td>Temporal jitter ratio</td><td>0.9776 ± 0.0739</td><td class="dim">Frame-to-frame stability vs. reference</td></tr>
+          <tr><td>Patch boundary ratio</td><td>1.0656 ± 0.0633</td><td class="dim">Coarse-grid seam visibility at patch edges</td></tr>
+          <tr><td>Audio waveform correlation</td><td>0.9927 ± 0.0126</td><td class="dim">Audio is essentially unaffected</td></tr>
+          <tr><td>Audio spectral correlation</td><td>0.9650 ± 0.0366</td><td class="dim">Audio is essentially unaffected</td></tr>
+          <tr><td>Log-spectral distance (dB)</td><td>2.649 ± 1.971</td><td class="dim">Small residual audio spectral drift</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= PER-PROMPT ================= -->
+  <section id="per-prompt">
+    <h2>Per-prompt breakdown</h2>
+    <p class="section-kicker">Mean ± std across 4 seeds per prompt</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Prompt</th><th>E2E speedup</th><th>SSIM</th><th>PSNR (dB)</th><th>Audio corr.</th><th>LSD (dB)</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Prompt 1</td>
+            <td>1.0367 ± 0.0088</td>
+            <td>0.9515 ± 0.0077</td>
+            <td>35.63 ± 0.52</td>
+            <td>0.9992 ± 0.0005</td>
+            <td>3.263 ± 0.548</td>
+          </tr>
+          <tr>
+            <td>Prompt 2</td>
+            <td>1.0210 ± 0.0268</td>
+            <td>0.9475 ± 0.0461</td>
+            <td>38.64 ± 8.97</td>
+            <td>0.9979 ± 0.0024</td>
+            <td>1.486 ± 1.653</td>
+          </tr>
+          <tr>
+            <td>Prompt 3</td>
+            <td>1.0261 ± 0.0351</td>
+            <td>0.8678 ± 0.0693</td>
+            <td>28.15 ± 3.56</td>
+            <td>0.9918 ± 0.0125</td>
+            <td>3.363 ± 0.984</td>
+          </tr>
+          <tr>
+            <td>Prompt 4 <span class="tag tag-ocean">ocean · identical</span></td>
+            <td>0.9983 ± 0.0046</td>
+            <td>1.0000 ± 0.0000</td>
+            <td>100.00 ± 0.00</td>
+            <td>0.99999 ± 0.00002</td>
+            <td>0.053 ± 0.106</td>
+          </tr>
+          <tr>
+            <td>Prompt 5 <span class="tag tag-wuxia">wuxia · hardest</span></td>
+            <td>1.0403 ± 0.0410</td>
+            <td>0.7924 ± 0.0373</td>
+            <td>23.63 ± 2.25</td>
+            <td>0.9744 ± 0.0150</td>
+            <td>5.079 ± 0.863</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="chart-card">
+      <p class="chart-title">E2E speedup by prompt, vs. the 3% ship gate</p>
+      <p class="chart-sub">Bars show mean speedup expressed as % change in wall-clock time (positive = faster)</p>
+
+      <div class="chart-row">
+        <div class="rlabel">Prompt 1</div>
+        <div class="chart-track">
+          <div class="chart-marker" style="left:25%"></div>
+          <div class="chart-marker" style="left:62.5%"><span class="mlabel">3% gate</span></div>
+          <div class="chart-fill" style="left:25%; width:45.88%"></div>
+        </div>
+        <div class="rvalue">+3.67%</div>
+      </div>
+      <div class="chart-row">
+        <div class="rlabel">Prompt 2</div>
+        <div class="chart-track">
+          <div class="chart-marker" style="left:25%"></div>
+          <div class="chart-marker" style="left:62.5%"></div>
+          <div class="chart-fill" style="left:25%; width:26.25%"></div>
+        </div>
+        <div class="rvalue">+2.10%</div>
+      </div>
+      <div class="chart-row">
+        <div class="rlabel">Prompt 3</div>
+        <div class="chart-track">
+          <div class="chart-marker" style="left:25%"></div>
+          <div class="chart-marker" style="left:62.5%"></div>
+          <div class="chart-fill" style="left:25%; width:32.64%"></div>
+        </div>
+        <div class="rvalue">+2.61%</div>
+      </div>
+      <div class="chart-row">
+        <div class="rlabel">Prompt 4</div>
+        <div class="chart-track">
+          <div class="chart-marker" style="left:25%"></div>
+          <div class="chart-marker" style="left:62.5%"></div>
+          <div class="chart-fill neg" style="left:22.92%; width:2.08%"></div>
+        </div>
+        <div class="rvalue">−0.17%</div>
+      </div>
+      <div class="chart-row">
+        <div class="rlabel">Prompt 5</div>
+        <div class="chart-track">
+          <div class="chart-marker" style="left:25%"></div>
+          <div class="chart-marker" style="left:62.5%"></div>
+          <div class="chart-fill" style="left:25%; width:50.40%"></div>
+        </div>
+        <div class="rvalue">+4.03%</div>
+      </div>
+
+      <div class="chart-key">
+        <span><span class="sw" style="background:var(--series-1)"></span>Faster than reference</span>
+        <span><span class="sw" style="background:var(--serious)"></span>Slower than reference</span>
+        <span>┊ dashed = 0% parity · ┊ 3% = predeclared ship gate</span>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <p class="chart-title">SSIM by prompt</p>
+      <p class="chart-sub">Structural similarity to reference frames, 0.75–1.02 scale</p>
+
+      <div class="chart-row">
+        <div class="rlabel">Prompt 1</div>
+        <div class="chart-track">
+          <div class="chart-marker" style="left:55.56%"><span class="mlabel">0.90</span></div>
+          <div class="chart-fill" style="left:0%; width:74.62%"></div>
+        </div>
+        <div class="rvalue">0.9515</div>
+      </div>
+      <div class="chart-row">
+        <div class="rlabel">Prompt 2</div>
+        <div class="chart-track">
+          <div class="chart-marker" style="left:55.56%"></div>
+          <div class="chart-fill" style="left:0%; width:73.13%"></div>
+        </div>
+        <div class="rvalue">0.9475</div>
+      </div>
+      <div class="chart-row">
+        <div class="rlabel">Prompt 3</div>
+        <div class="chart-track">
+          <div class="chart-marker" style="left:55.56%"></div>
+          <div class="chart-fill" style="left:0%; width:43.62%"></div>
+        </div>
+        <div class="rvalue">0.8678</div>
+      </div>
+      <div class="chart-row">
+        <div class="rlabel">Prompt 4</div>
+        <div class="chart-track">
+          <div class="chart-marker" style="left:55.56%"></div>
+          <div class="chart-fill" style="left:0%; width:92.59%"></div>
+        </div>
+        <div class="rvalue">1.0000</div>
+      </div>
+      <div class="chart-row">
+        <div class="rlabel">Prompt 5</div>
+        <div class="chart-track">
+          <div class="chart-marker" style="left:55.56%"></div>
+          <div class="chart-fill neg" style="left:0%; width:15.71%"></div>
+        </div>
+        <div class="rvalue">0.7924</div>
+      </div>
+
+      <div class="chart-key">
+        <span><span class="sw" style="background:var(--series-1)"></span>SSIM ≥ 0.90</span>
+        <span><span class="sw" style="background:var(--serious)"></span>SSIM &lt; 0.90</span>
+        <span>┊ dashed = 0.90 reference line</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FIDELITY ================= -->
+  <section id="fidelity">
+    <h2>Content-dependent fidelity</h2>
+    <p class="section-kicker">The same method, two very different outcomes</p>
+    <p class="prose">
+      Aggregate fidelity numbers hide a real split: content that is spatially low-frequency and
+      low-motion is essentially unaffected by coarsening the attention grid, while content with fine
+      high-frequency detail and fast motion loses visibly more than the anchor term can restore.
+    </p>
+
+    <div class="callout-grid">
+      <div class="callout ocean">
+        <div class="htag">Prompt 4 · Ocean</div>
+        <div class="stat-row"><span>SSIM</span><span>1.0000</span></div>
+        <div class="stat-row"><span>PSNR</span><span>100.00 dB</span></div>
+        <div class="stat-row"><span>Audio correlation</span><span>0.99999</span></div>
+        <div class="stat-row"><span>LSD</span><span>0.053 dB</span></div>
+        <p style="margin:12px 0 0; font-size:13px;">Pixel-identical across all 4 seeds — smooth, low-frequency
+        motion is fully recoverable from the coarse grid plus anchor. This is also the one prompt where
+        the candidate ran slightly <em>slower</em> on average (−0.17%), since the anchor computation adds
+        a fixed cost that low-motion content doesn't offset with attention savings.</p>
+      </div>
+      <div class="callout wuxia">
+        <div class="htag">Prompt 5 · Wuxia</div>
+        <div class="stat-row"><span>SSIM</span><span>0.7924</span></div>
+        <div class="stat-row"><span>PSNR</span><span>23.63 dB</span></div>
+        <div class="stat-row"><span>Audio correlation</span><span>0.9744</span></div>
+        <div class="stat-row"><span>LSD</span><span>5.079 dB</span></div>
+        <p style="margin:12px 0 0; font-size:13px;">Fast choreography and fine costume/weapon detail push
+        SSIM down to 0.7924 and LPIPS up — the lowest fidelity of any prompt in this matrix, and the
+        clearest case for withholding this method from general use until high-motion content is handled
+        better.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VIDEOS ================= -->
+  <section id="videos">
+    <h2>Review videos</h2>
+    <p class="section-kicker">All 20 candidate renders, grouped by prompt — spot-check before trusting the numbers</p>
+
+    <div class="prompt-group">
+      <h4>Prompt 1</h4>
+      <div class="video-grid">
+        <div class="vcard">
+          <video src="videos/p1_seed79552_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p1_seed79552_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip up">+4.13% E2E</span>
+              <span class="mchip">SSIM 0.9560</span>
+              <span class="mchip">LSD 3.41 dB</span>
+            </div>
+          </div>
+        </div>
+        <div class="vcard">
+          <video src="videos/p1_seed48407_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p1_seed48407_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip up">+2.48% E2E</span>
+              <span class="mchip">SSIM 0.9472</span>
+              <span class="mchip">LSD 3.88 dB</span>
+            </div>
+          </div>
+        </div>
+        <div class="vcard">
+          <video src="videos/p1_seed1337_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p1_seed1337_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip up">+3.55% E2E</span>
+              <span class="mchip">SSIM 0.9430</span>
+              <span class="mchip">LSD 2.56 dB</span>
+            </div>
+          </div>
+        </div>
+        <div class="vcard">
+          <video src="videos/p1_seed20260819_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p1_seed20260819_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip up">+4.51% E2E</span>
+              <span class="mchip">SSIM 0.9597</span>
+              <span class="mchip">LSD 3.20 dB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-group">
+      <h4>Prompt 2</h4>
+      <div class="video-grid">
+        <div class="vcard">
+          <video src="videos/p2_seed79552_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p2_seed79552_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip down">−0.88% E2E</span>
+              <span class="mchip">SSIM 0.9801</span>
+              <span class="mchip">LSD 0.12 dB</span>
+            </div>
+          </div>
+        </div>
+        <div class="vcard">
+          <video src="videos/p2_seed48407_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p2_seed48407_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip up">+1.04% E2E</span>
+              <span class="mchip">SSIM 0.9910</span>
+              <span class="mchip">LSD 0.00 dB</span>
+            </div>
+          </div>
+        </div>
+        <div class="vcard">
+          <video src="videos/p2_seed1337_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p2_seed1337_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip up">+5.43% E2E</span>
+              <span class="mchip">SSIM 0.9252</span>
+              <span class="mchip">LSD 2.75 dB</span>
+            </div>
+          </div>
+        </div>
+        <div class="vcard">
+          <video src="videos/p2_seed20260819_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p2_seed20260819_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip up">+2.80% E2E</span>
+              <span class="mchip">SSIM 0.8935</span>
+              <span class="mchip">LSD 3.08 dB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-group">
+      <h4>Prompt 3</h4>
+      <div class="video-grid">
+        <div class="vcard">
+          <video src="videos/p3_seed79552_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p3_seed79552_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip up">+3.86% E2E</span>
+              <span class="mchip">SSIM 0.9036</span>
+              <span class="mchip">LSD 3.18 dB</span>
+            </div>
+          </div>
+        </div>
+        <div class="vcard">
+          <video src="videos/p3_seed48407_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p3_seed48407_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip up">+3.19% E2E</span>
+              <span class="mchip">SSIM 0.8986</span>
+              <span class="mchip">LSD 2.54 dB</span>
+            </div>
+          </div>
+        </div>
+        <div class="vcard">
+          <video src="videos/p3_seed1337_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p3_seed1337_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip up">+5.78% E2E</span>
+              <span class="mchip">SSIM 0.9049</span>
+              <span class="mchip">LSD 2.94 dB</span>
+            </div>
+          </div>
+        </div>
+        <div class="vcard">
+          <video src="videos/p3_seed20260819_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p3_seed20260819_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip down">−2.39% E2E</span>
+              <span class="mchip">SSIM 0.7640</span>
+              <span class="mchip">LSD 4.78 dB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-group">
+      <h4>Prompt 4 <span class="tag tag-ocean">ocean · identical</span></h4>
+      <div class="video-grid">
+        <div class="vcard">
+          <video src="videos/p4_seed79552_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p4_seed79552_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip down">−0.81% E2E</span>
+              <span class="mchip">SSIM 1.0000</span>
+              <span class="mchip">LSD 0.00 dB</span>
+            </div>
+          </div>
+        </div>
+        <div class="vcard">
+          <video src="videos/p4_seed48407_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p4_seed48407_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip down">−0.13% E2E</span>
+              <span class="mchip">SSIM 1.0000</span>
+              <span class="mchip">LSD 0.00 dB</span>
+            </div>
+          </div>
+        </div>
+        <div class="vcard">
+          <video src="videos/p4_seed1337_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p4_seed1337_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip up">+0.24% E2E</span>
+              <span class="mchip">SSIM 1.0000</span>
+              <span class="mchip">LSD 0.21 dB</span>
+            </div>
+          </div>
+        </div>
+        <div class="vcard">
+          <video src="videos/p4_seed20260819_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p4_seed20260819_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip up">+0.04% E2E</span>
+              <span class="mchip">SSIM 1.0000</span>
+              <span class="mchip">LSD 0.00 dB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-group">
+      <h4>Prompt 5 <span class="tag tag-wuxia">wuxia · hardest</span></h4>
+      <div class="video-grid">
+        <div class="vcard">
+          <video src="videos/p5_seed79552_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p5_seed79552_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip down">−2.08% E2E</span>
+              <span class="mchip">SSIM 0.7683</span>
+              <span class="mchip">LSD 5.06 dB</span>
+            </div>
+          </div>
+        </div>
+        <div class="vcard">
+          <video src="videos/p5_seed48407_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p5_seed48407_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip up">+6.63% E2E</span>
+              <span class="mchip">SSIM 0.8291</span>
+              <span class="mchip">LSD 6.13 dB</span>
+            </div>
+          </div>
+        </div>
+        <div class="vcard">
+          <video src="videos/p5_seed1337_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p5_seed1337_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip up">+5.47% E2E</span>
+              <span class="mchip">SSIM 0.8191</span>
+              <span class="mchip">LSD 4.01 dB</span>
+            </div>
+          </div>
+        </div>
+        <div class="vcard">
+          <video src="videos/p5_seed20260819_cache_resolution.mp4" controls preload="none"></video>
+          <div class="vbody">
+            <div class="vname">p5_seed20260819_cache_resolution.mp4</div>
+            <div class="vmetrics">
+              <span class="mchip up">+6.10% E2E</span>
+              <span class="mchip">SSIM 0.7532</span>
+              <span class="mchip">LSD 5.12 dB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= GLOSSARY ================= -->
+  <section id="glossary">
+    <h2>Metric glossary</h2>
+    <p class="section-kicker">What each number in this report actually measures</p>
+    <dl class="glossary">
+      <div class="gterm">
+        <dt>SSIM (structural similarity)</dt>
+        <dd>Compares local luminance, contrast, and structure between candidate and reference frames on
+        a 0–1 scale. 1.0 is pixel-for-pixel identical structure; values below ~0.90 are visible to the eye
+        as softening, texture loss, or drift.</dd>
+      </div>
+      <div class="gterm">
+        <dt>LPIPS (learned perceptual image patch similarity)</dt>
+        <dd>A learned distance between deep-network features of candidate and reference frames, closer to
+        how a human perceives difference than pixel metrics. Lower is more similar; 0 is identical.</dd>
+      </div>
+      <div class="gterm">
+        <dt>PSNR (peak signal-to-noise ratio)</dt>
+        <dd>A pixel-error metric in decibels — higher is closer to the reference. It is dominated by
+        exact matches (100 dB on the pixel-identical ocean prompt), which is why the aggregate mean and
+        std look unusually wide; treat it as a secondary check to SSIM/LPIPS rather than the primary
+        fidelity signal.</dd>
+      </div>
+      <div class="gterm">
+        <dt>Sharpness ratio</dt>
+        <dd>Candidate high-frequency detail energy divided by reference. 1.0 means equally sharp; below 1
+        means the candidate is softer — expected from grid coarsening before the anchor correction.</dd>
+      </div>
+      <div class="gterm">
+        <dt>Temporal jitter ratio</dt>
+        <dd>Compares frame-to-frame change magnitude between candidate and reference. Values near 1.0
+        mean motion stability is preserved; deviation indicates the candidate is flickering or
+        smoothing motion differently than the reference.</dd>
+      </div>
+      <div class="gterm">
+        <dt>Patch boundary ratio</dt>
+        <dd>Measures edge energy specifically at coarse-grid patch boundaries relative to reference —
+        a direct check for visible seams introduced by the 10×18 downsampling.</dd>
+      </div>
+      <div class="gterm">
+        <dt>Waveform / spectral correlation, LSD (audio)</dt>
+        <dd>Waveform and spectral correlation measure how closely the candidate audio track tracks the
+        reference in time and frequency (1.0 = identical). Log-spectral distance (LSD, dB) is a
+        frequency-domain error measure — lower is closer. All three confirm this change barely touches
+        audio.</dd>
+      </div>
+      <div class="gterm">
+        <dt>Paired t-test (statistic, p-value)</dt>
+        <dd>Each of the 20 prompt/seed pairs contributes one reference-minus-candidate delta; the paired
+        t-test asks whether the mean of those deltas is reliably different from zero, accounting for
+        per-pair variance. p &lt; .05 means the timing difference is unlikely to be noise — it says
+        nothing about whether the size of the effect clears a ship bar.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- ================= LIMITATIONS ================= -->
+  <section id="limitations">
+    <h2>Limitations</h2>
+    <ul class="limits">
+      <li><strong>Below the predeclared ship gate.</strong> The 3% end-to-end speedup threshold was set
+      before this run. The measured 2.4% mean is statistically real (p = .0015) but does not clear that
+      bar, and per-prompt speedup ranges from −0.17% to +4.03% — the gate would need either a larger
+      average effect or a narrower content scope to justify shipping as-is.</li>
+      <li><strong>Fidelity is content-dependent, not uniform.</strong> Low-motion, low-frequency scenes
+      (ocean) are unaffected; fast, fine-detail scenes (wuxia) drop to SSIM 0.7924 / LPIPS ~0.28 — well
+      below the aggregate mean and likely visible to viewers.</li>
+      <li><strong>Small, fixed matrix.</strong> 5 prompts × 4 seeds on one GPU is enough to establish a
+      real paired effect but not enough to characterize the full space of content types this method
+      would touch in production.</li>
+      <li><strong>One additional comparison was excluded from every result in this report.</strong> A
+      further prompt/seed attempt failed during launch before either run completed cleanly, corrupting
+      its timing capture; the delta it would have produced was not representative of the method and is
+      omitted here rather than reported.</li>
+      <li><strong>PSNR is a poor aggregate signal for this workload.</strong> It is dominated by
+      pixel-identical runs pulling the mean and std to extreme values; SSIM and LPIPS are the more
+      trustworthy fidelity read.</li>
+      <li><strong>Denoise-only and end-to-end tell slightly different stories.</strong> The gap between
+      the two speedups reflects fixed encode/decode overhead outside the modified window; the ship gate
+      is defined on end-to-end time, which is the harder number to move.</li>
+      <li><strong>Cache and coarse-grid hyperparameters were not swept.</strong> τ, warmup, horizon, cap,
+      the 10×18 target resolution, and the σ-scaling schedule were all held at one configuration; it is
+      unknown whether a different point in that space clears the gate without the wuxia-class fidelity
+      cost.</li>
+    </ul>
+  </section>
+
+  <!-- ================= DECISION ================= -->
+  <section id="decision">
+    <h2>Decision</h2>
+    <div class="decision-card">
+      <div class="verdict">✕ Not proposed for PR</div>
+      <p style="margin:0 0 4px; color:var(--text-secondary); font-size:14px;">
+        Real, statistically significant, and mechanically sound — but it misses the ship gate agreed
+        before this run, and the content-dependent fidelity cost is concentrated exactly where it would
+        be most visible.
+      </p>
+      <div class="gate-compare">
+        <div class="g">
+          <div class="n">3.0%</div>
+          <div class="l">predeclared ship gate</div>
+        </div>
+        <div class="g">
+          <div class="n" style="color:var(--critical)">2.4%</div>
+          <div class="l">measured E2E improvement</div>
+        </div>
+        <div class="g">
+          <div class="n">15 / 20</div>
+          <div class="l">pairs faster</div>
+        </div>
+      </div>
+      <p style="margin:0; font-size:14px;">
+        <strong>Recommendation:</strong> keep this as a validated research direction, not a shipping
+        candidate. The next useful step is closing the gap on high-motion, fine-detail content — either
+        a less aggressive coarsening ratio or a stronger anchor term for those cases — before re-running
+        against the same gate, rather than lowering the gate to fit this result.
+      </p>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  MiniMax-H3 cache-aligned coarse-attention evaluation · 1× AMD MI355X · T2VA 1344×768, 124 frames, 50 steps
+</footer>
+
+<script>
+  (function () {
+    var btn = document.getElementById('themeToggle');
+    var root = document.documentElement;
+    var stored = null;
+    try { stored = localStorage.getItem('report-theme'); } catch (e) {}
+    if (stored) root.setAttribute('data-theme', stored);
+    btn.addEventListener('click', function () {
+      var current = root.getAttribute('data-theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var next;
+      if (!current) next = prefersDark ? 'light' : 'dark';
+      else next = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('report-theme', next); } catch (e) {}
+    });
+  })();
+
+  // Build the dense (24x42) vs coarse (10x18) grid swatches, scaled to a shared pixel budget.
+  (function () {
+    function buildGrid(id, cols, rows, cellPx) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.style.gridTemplateColumns = 'repeat(' + cols + ', ' + cellPx + 'px)';
+      el.style.gridTemplateRows = 'repeat(' + rows + ', ' + cellPx + 'px)';
+      var frag = document.createDocumentFragment();
+      for (var i = 0; i < cols * rows; i++) {
+        var c = document.createElement('div');
+        c.className = 'swatch-cell';
+        frag.appendChild(c);
+      }
+      el.appendChild(frag);
+    }
+    buildGrid('grid-dense', 42, 24, 4);
+    buildGrid('grid-coarse', 18, 10, 4);
+  })();
+</script>
+
+</body>
+</html>
