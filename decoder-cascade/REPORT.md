@@ -149,3 +149,77 @@ Automated Pareto ordering is clear: pure TAEH3 is fastest; 4/7 is closest to off
 - `data/summary.json`: aggregate and per-prompt statistics only.
 
 Raw manifests, logs, local paths, and run identifiers are intentionally excluded from the public repository.
+
+## Temporal Position Bias and Front-Loaded Decoding
+
+### New hypothesis
+
+**H1: TAEH3 reconstruction artifacts are temporally non-uniform and are disproportionately concentrated near the beginning of the decoded video.** If true, a front-loaded decoder cascade should outperform uniformly or arbitrarily distributed official chunks under matched compute. This section only adds results; all earlier results remain unchanged.
+
+### Temporal error profile
+
+Pure TAEH3 was compared frame-by-frame with the full official decoder for all 20 existing videos (five prompts × four seeds, 124 frames each).
+
+| region | frames | MAE ↓ | PSNR ↑ | SSIM ↑ | LPIPS ↓ | temporal Δ error ↓ | jitter ratio |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 0-20% | 0–24 | 4.1958 | 31.83 | 0.8953 | 0.0900 | 3.8435 | 0.9466 |
+| 20-40% | 25–49 | 4.0508 | 32.05 | 0.9026 | 0.0919 | 3.8651 | 0.9384 |
+| 40-60% | 50–74 | 3.8017 | 32.64 | 0.9093 | 0.0878 | 3.5283 | 0.9421 |
+| 60-80% | 75–99 | 3.7578 | 32.76 | 0.9074 | 0.0845 | 3.2895 | 0.9777 |
+| 80-100% | 100–123 | 3.7148 | 33.10 | 0.9045 | 0.0853 | 3.1008 | 1.0054 |
+
+The first quintile has 12.9% more absolute error and 24.0% more temporal-delta error than the final quintile; PSNR is 1.27 dB lower. However, LPIPS is slightly worse in the second quintile and SSIM peaks in the middle. H1 is therefore **weakly supported**: early reconstruction is harder on average, but the first chunk is not universally worst. The public page includes frame-wise curves for all six metrics.
+
+### Matched-budget decoder allocation
+
+Fixed 1/7 uses official chunk 3; Front-1 uses chunk 0. Fixed 2/7 uses chunks 1 and 5; Front-2 uses chunks 0 and 1; Front+Late uses chunks 0 and 5. Indices are zero-based; every hybrid uses identical two-frame feathering.
+
+| Method | Official chunks | Decoder | Composed E2E | reduction | SSIM ↑ | PSNR ↑ | LPIPS ↓ | jitter | temporal Δ ↓ |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Full Official | 7/7 | 4.129 s | 33.03 s | 0.00% | 1.0000 | reference | 0.0000 | 1.0000 | 0.0000 |
+| TAEH3 | 0/7 | 0.056 s | 28.95 s | 12.39% | 0.9038 | 32.11 dB | 0.0879 | 0.9462 | 3.5263 |
+| Fixed 1/7 | 1/7 | 0.688 s | 29.59 s | 10.47% | 0.9111 | 32.59 dB | 0.0799 | 0.9603 | 3.3232 |
+| **Front-1** | 1/7 | 0.683 s | 29.58 s | 10.48% | 0.9125 | 32.70 dB | 0.0798 | 0.9575 | 3.3234 |
+| Fixed 2/7 | 2/7 | 1.269 s | 30.17 s | 8.70% | 0.9193 | 33.24 dB | 0.0723 | 0.9750 | 3.1198 |
+| **Front-2** | 2/7 | 1.280 s | 30.18 s | 8.67% | 0.9208 | 33.41 dB | 0.0718 | 0.9708 | 3.0842 |
+| **Front+Late** | 2/7 | 1.263 s | 30.16 s | 8.72% | 0.9196 | 33.20 dB | 0.0728 | 0.9710 | 3.1608 |
+
+Matched decoder cost is effectively identical: Front-1 versus Fixed 1/7 differs by 0.004 s; Front-2 versus Fixed 2/7 differs by 0.011 s.
+
+### Same-case paired result
+
+| comparison | Δ SSIM / wins | Δ PSNR / wins | Δ LPIPS / wins | Δ temporal error / wins |
+|---|---:|---:|---:|---:|
+| Front-1 − Fixed 1/7 | +0.0015 · 14/20 | +0.11 dB · 13/20 | -0.0001 · 8/20 | +0.0002 · 8/20 |
+| Front-2 − Fixed 2/7 | +0.0015 · 12/20 | +0.17 dB · 11/20 | -0.0005 · 12/20 | -0.0356 · 13/20 |
+| Front+Late − Fixed 2/7 | +0.0003 · 14/20 | -0.04 dB · 13/20 | +0.0005 · 7/20 | +0.0410 · 5/20 |
+
+Front-1 has small SSIM/PSNR gains but no consistent LPIPS or temporal-stability win. Front-2 is directionally better on SSIM, PSNR, LPIPS, and temporal-delta error, but the effects are small. Front+Late has no matched-baseline advantage.
+
+### Boundary analysis
+
+| candidate | switch | official-tail MAE | feather MAE | first TAE MAE | brightness | color | texture | motion |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Front-1 | frame 17 | 1.878 | 2.588 | 4.079 | 0.645 | 0.643 | 0.105 | 3.324 |
+| Front-2 | frame 34 | 1.805 | 2.416 | 3.855 | 0.713 | 0.706 | 0.060 | 3.163 |
+| Front+Late | frame 17 | 1.877 | 2.588 | 4.079 | 0.644 | 0.643 | 0.105 | 3.323 |
+
+The feather avoids a catastrophic one-frame cut, but error rises from about 1.8–1.9 MAE in the official tail to 2.4–2.6 in the feather and 3.9–4.1 after pure TAEH3 resumes. Mean brightness/color jump errors remain below one 8-bit level; human review is still required for texture shimmer and motion continuity.
+
+### Per-prompt front-loaded result
+
+| prompt | Front-1 SSIM / LPIPS | Front-2 SSIM / LPIPS | Front+Late SSIM / LPIPS |
+|---|---:|---:|---:|
+| red ball | 0.9474 / 0.0485 | 0.9517 / 0.0447 | 0.9514 / 0.0451 |
+| neon rain (speech) | 0.9198 / 0.0697 | 0.9310 / 0.0593 | 0.9244 / 0.0649 |
+| drummer (percussion) | 0.9195 / 0.0566 | 0.9267 / 0.0510 | 0.9267 / 0.0511 |
+| ocean (scenery) | 0.8723 / 0.1121 | 0.8827 / 0.1014 | 0.8823 / 0.1012 |
+| wuxia (fast motion + music) | 0.9036 / 0.1122 | 0.9117 / 0.1026 | 0.9131 / 0.1016 |
+
+### Prefix sweep
+
+The optional 4/8/16-frame sweep was not run. The official H3 VAE is temporally chunked with overlap/state assumptions; arbitrary prefixes would not preserve the valid decoder operation and could manufacture boundary artifacts. One complete 17-frame chunk is the smallest deterministic unit tested.
+
+### Decision and Pareto update
+
+This is a **weak positive** result. Temporal-position bias exists in aggregate pixel and temporal-delta error, but is not consistent enough across LPIPS, SSIM, content, and paired wins to make front-loaded allocation the new default. Front-2 remains a diagnostic/perceptual candidate: no training, additional model, runtime predictor, or adaptive logic, at the same official-decoder budget as Fixed 2/7. Fixed 2/7 remains the balanced default pending multi-case human review. If review confirms less initial shimmer for Front-2 without a visible transition, it can become an early-stability preset; otherwise future work should select chunks content-adaptively.
